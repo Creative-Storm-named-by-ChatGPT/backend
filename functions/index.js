@@ -2,15 +2,7 @@ const { onDocumentCreated } = require('firebase-functions/v2/firestore');
 const { default: OpenAI } = require('openai');
 const { defineString } = require('firebase-functions/params');
 
-const openAi = new OpenAI({
-    apiKey: defineString('OPEN_AI_KEY'),
-});
-
-/*
-OpenAIError: The OPENAI_API_KEY environment variable is missing or empty; either provide it, or instantiate the OpenAI client with an apiKey option, like new OpenAI({ apiKey: 'My API Key' }).
-*/
-
-exports.createuser = onDocumentCreated(
+exports.createJournal = onDocumentCreated(
     'journals/{journalId}',
     async (event) => {
         const snapshot = event.data;
@@ -19,6 +11,10 @@ exports.createuser = onDocumentCreated(
             return;
         }
         const data = snapshot.data();
+
+        const openAi = new OpenAI({
+            apiKey: defineString('OPEN_AI_KEY').value(),
+        });
 
         // Open AI API ChatGPT 3.5 turbo で日記の特徴を抽出
         const gptTextResponse = await openAi.chat.completions.create({
@@ -48,7 +44,7 @@ exports.createuser = onDocumentCreated(
             max_tokens: 200,
         });
 
-        const dallePrompt = gptTextResponse.choices[0];
+        const dallePrompt = gptTextResponse.choices[0].message.content;
 
         // DALL-E API で日記の画像を生成
         const imageResponse = await await openAi.images.generate({
