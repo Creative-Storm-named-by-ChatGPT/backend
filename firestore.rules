@@ -2,9 +2,35 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+  
+  	function isAuthenticated() {
+ 	  	return request.auth != null;
+		}
+    
+    function isAuthenticatedUID(uid) {
+    	return request.auth != null && request.auth.uid == uid;
+		}
+    
+    function isUUIDv4(value) {
+    	return value.matches('[a-z0-9]{8}-[a-z0-9]{4}-4[a-z0-9]{3}-[a-z0-9]{4}-[a-z0-9]{12}');
+		}
+    
+    function isValidJournal(data) {
+    	return data.size() == 6
+    	&& 'id' in data && data.id is string && isUUIDv4(data.id)
+    	&& 'uid' in data && data.uid is string
+    	&& 'content' in data && data.content is string
+    	&& 'imageURL' in data && data.imageURL is string && data.imageURL == ''
+    	&& 'prompt' in data && data.prompt is string && data.prompt == ''
+    	&& 'timestamp' in data && data.timestamp is timestamp;
+		}
 
-    match /{document=**} {
-      allow read, write: if request.time < timestamp.date(2024, 4, 22);
-    }
+    match /journals/{journalId} {
+			allow read: if isAuthenticated();
+      allow create: if isAuthenticated()
+      	&& isAuthenticatedUID(request.resource.data.uid)
+        && request.resource.data.id == request.resource.id
+        && isValidJournal(request.resource.data);
+		}
   }
 }
