@@ -23,21 +23,21 @@ exports.createJournal = onDocumentCreated(
                 {
                     role: 'user',
                     content: `# Image Generation
-    Please generate a prompt for text-to-image AI, such as DALL-E, to illustrate an image following the Prompt Guide. Output only the generated English prompt without the descriptive text.
-    
-    ## Prompt Guide
-    To create a text-to-image AI prompt, execute following procedures step-by-step on GPT:
-    
-    1. Consider what kind of image you want to generate. For an image that meets the following theme of the image, consider a detailed description of about 500 words in English. If there are objects such as characters or animals, consider in detail how they are depicted, such as what they are wearing and what they are doing, as well as what is depicted in the background of the picture.
-    2. Identify the key elements of the image description that are relevant to the AI’s generation process. These may include objects, characters, actions, colors, resolution, additional details, the material used to make artwork, style refered to the artistic style of the image, and lighting.
-    3. Express each of these elements clearly using only a combination of Danbooru tags separated by commas.
-    4. Add Danbooru tags separated by commas that are resolution, such as best quality, masterpiece, extremely detailed, if necessary.
-    5. Add Danbooru tags separated by commas that are the material used to make artwork, style refered to the artistic style of the image, such as illustration, oil painting, 3D rendering, and photography, if necessary.
-    6. Add Danbooru tags separated by commas that are the style refers to the artistic style of the image, such as impressionist, surrealist, pop art, if necessary.
-    7. Ensure that the prompt is coherent and unambiguous, providing enough detail for the AI to generate an accurate image while avoiding unnecessary or irrelevant information.
-    
-    ### Theme of the image
-    ${data.content}`,
+Please generate a prompt for text-to-image AI, such as DALL-E, to illustrate an image following the Prompt Guide. Output only the generated English prompt without the descriptive text.
+
+# Prompt Guide
+To create a text-to-image AI prompt, execute following procedures step-by-step on GPT:
+
+1. Consider what kind of image you want to generate. For an image that meets the following theme of the image, consider a detailed description of about 500 words in English. If there are objects such as characters or animals, consider in detail how they are depicted, such as what they are wearing and what they are doing, as well as what is depicted in the background of the picture.
+2. Identify the key elements of the image description that are relevant to the AI’s generation process. These may include objects, characters, actions, colors, resolution, additional details, the material used to make artwork, style refered to the artistic style of the image, and lighting.
+3. Express each of these elements clearly using only a combination of Danbooru tags separated by commas.
+4. Add Danbooru tags separated by commas that are resolution, such as best quality, masterpiece, extremely detailed, if necessary.
+5. Add Danbooru tags separated by commas that are the material used to make artwork, style refered to the artistic style of the image, such as illustration, oil painting, 3D rendering, and photography, if necessary.
+6. Add Danbooru tags separated by commas that are the style refers to the artistic style of the image, such as impressionist, surrealist, pop art, if necessary.
+7. Ensure that the prompt is coherent and unambiguous, providing enough detail for the AI to generate an accurate image while avoiding unnecessary or irrelevant information.
+
+# Theme of the image
+${data.content}`,
                 },
             ],
             temperature: 1.54,
@@ -49,7 +49,7 @@ exports.createJournal = onDocumentCreated(
         // DALL-E API で日記の画像を生成
         const imageResponse = await await openAi.images.generate({
             model: 'dall-e-3',
-            prompt: dallePrompt,
+            prompt: `Illustration, ${dallePrompt}`,
             size: '1024x1024',
             quality: 'standard',
             n: 1,
